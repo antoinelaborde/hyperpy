@@ -3,7 +3,8 @@ import os
 
 import numpy as np
 from scipy.io import loadmat
-from hyperspectralpython.src.loading.envi_header import read_hdr_file, find_hdr_file
+
+from hyperpy.loading.envi_header import read_hdr_file, find_hdr_file
 
 def read_mat_file(file_name: str) -> np.array:
     """

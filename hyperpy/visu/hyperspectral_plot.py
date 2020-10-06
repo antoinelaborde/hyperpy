@@ -2,7 +2,7 @@ from typing import Union
 
 import matplotlib.pyplot as plt
 
-from hyperspectralpython.src.cube.classes import SpectralCube
+from hyperpy.cube.classes import SpectralCube
 
 
 def cube_slice(spectral_cube: SpectralCube, domain_index: int, title: Union[str, None] = None):

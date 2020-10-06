@@ -3,8 +3,8 @@ import time
 import subprocess
 import webbrowser
 
-from hyperspectralpython.src.utils import serve
-from hyperspectralpython.src.visu import utils
+from hyperpy.utils import serve
+from hyperpy.visu import utils
 
 ## TO DO:
 # Make the function serve a class. 

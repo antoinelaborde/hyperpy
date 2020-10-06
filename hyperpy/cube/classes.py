@@ -3,9 +3,8 @@ from typing import Union
 
 import numpy as np
 
-from hyperspectralpython.src.exceptions import exceptions
-from hyperspectralpython.src.loading import read_specim, read_hyspex, read_mat_file
-
+from hyperpy import exceptions
+from hyperpy.loading import read_specim, read_hyspex, read_mat_file
 
 @dataclass
 class SpectralCube:

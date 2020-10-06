@@ -1,6 +1,5 @@
 import numpy as np
-from hyperspectralpython.src.exceptions import exceptions
-
+from hyperpy import exceptions
 def savitzky_golay(y, window_size, polynomial_order, derivation_order=0):
     """
     Compute a Savitzky Golay filter

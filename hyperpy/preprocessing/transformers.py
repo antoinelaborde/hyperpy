@@ -3,13 +3,10 @@ from copy import deepcopy
 import numpy as np
 from sklearn.base import TransformerMixin
 
-from hyperspectralpython.src.preprocessing.utils import savitzky_golay, resize_x
+from hyperpy.preprocessing.utils import savitzky_golay, resize_x
 
 """
 List of transformation to perform:
-MSC
-Savistky Golay derivation
-
 """
 
 
