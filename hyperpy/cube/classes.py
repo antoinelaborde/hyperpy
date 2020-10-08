@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional
 
 import numpy as np
 
 from hyperpy import exceptions
 from hyperpy.loading import read_specim, read_hyspex, read_mat_file
+
 
 @dataclass
 class SpectralCube:
@@ -36,7 +37,7 @@ class SpectralCube:
         return mat
 
     @staticmethod
-    def from_mat_file(data_file_name: str, domain_file_name: Union[None, str] = None):
+    def from_mat_file(data_file_name: str, domain_file_name: Optional[str] = None):
         """
         Construct a SpectralCube instance from a .mat file containing the data array and a .mat file containing the domain array.
         :param data_file_name:

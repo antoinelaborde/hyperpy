@@ -14,6 +14,7 @@ PyQt5 = "^5.15.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+nox = "^2020.8.22"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

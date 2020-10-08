@@ -17,8 +17,8 @@ class Log(TransformerMixin):
     """
 
     def __init__(self):
-        self.name = 'Logarithmic transformation'
-        self.short_name = 'Log'
+        self.name = "Logarithmic transformation"
+        self.short_name = "Log"
 
     def fit(self, X: np.array, y=None):
         return self
@@ -41,8 +41,8 @@ class Positive(TransformerMixin):
     """
 
     def __init__(self):
-        self.name = 'Positive transformation'
-        self.short_name = 'Pos'
+        self.name = "Positive transformation"
+        self.short_name = "Pos"
 
     def fit(self, X: np.array, y=None):
         return self
@@ -68,8 +68,8 @@ class StandardNormalDeviate(TransformerMixin):
     """
 
     def __init__(self):
-        self.name = 'Standard Normal Deviate'
-        self.short_name = 'SNV'
+        self.name = "Standard Normal Deviate"
+        self.short_name = "SNV"
 
     def fit(self, X: np.array, y=None):
         return self
@@ -96,8 +96,8 @@ class MeanCentering(TransformerMixin):
     """
 
     def __init__(self):
-        self.name = 'Mean centering'
-        self.short_name = 'MR'
+        self.name = "Mean centering"
+        self.short_name = "MR"
 
     def fit(self, X: np.array, y=None) -> np.array:
         return self
@@ -121,8 +121,8 @@ class SavistkyGolay(TransformerMixin):
     """
 
     def __init__(self, window_size=7, polynomial_order=2, derivation_order=1):
-        self.name = 'Savistky Golay filter'
-        self.short_name = 'SG'
+        self.name = "Savistky Golay filter"
+        self.short_name = "SG"
         self.window_size = window_size
         self.polynomial_order = polynomial_order
         self.derivation_order = derivation_order
@@ -131,8 +131,10 @@ class SavistkyGolay(TransformerMixin):
         return self
 
     def transform(self, X):
-        filter_, X_extended = savitzky_golay(X, self.window_size, self.polynomial_order, self.derivation_order)
-        X_sg = np.apply_along_axis(np.convolve, 1, X_extended, filter_, mode='valid')
+        filter_, X_extended = savitzky_golay(
+            X, self.window_size, self.polynomial_order, self.derivation_order
+        )
+        X_sg = np.apply_along_axis(np.convolve, 1, X_extended, filter_, mode="valid")
         return X_sg
 
 
@@ -144,8 +146,8 @@ class MultiplicativeScatterCorrection(TransformerMixin):
     """
 
     def __init__(self):
-        self.name = 'Multiplicative Scatter Correction'
-        self.short_name = 'MSC'
+        self.name = "Multiplicative Scatter Correction"
+        self.short_name = "MSC"
 
     def fit(self, X, y=None):
         """
