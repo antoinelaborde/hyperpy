@@ -115,13 +115,13 @@ class MeanCentering(TransformerMixin):
         return X_mean_centering
 
 
-class SavistkyGolay(TransformerMixin):
+class SavitzkyGolay(TransformerMixin):
     """
-    Use a Savitsky Golay filter row wise to derivate and/or smooth the signal in row.
+    Use a Savitzky Golay filter row wise to derivate and/or smooth the signal in row.
     """
 
     def __init__(self, window_size=7, polynomial_order=2, derivation_order=1):
-        self.name = "Savistky Golay filter"
+        self.name = "Savitzky Golay filter"
         self.short_name = "SG"
         self.window_size = window_size
         self.polynomial_order = polynomial_order
@@ -153,15 +153,26 @@ class MultiplicativeScatterCorrection(TransformerMixin):
         """
         Set the reference spectrum
         """
+        X_val = resize_x(X)
+        if X_val.shape[0] == 1 and y is None:
+            raise ValueError(
+                "A reference spectrum y must be given for X with only one row."
+            )
         if y is None:
             self.reference = np.mean(X, axis=0)
         else:
-            self.reference = y
+            if y.shape != (1, X_val.shape[1]):
+                raise ValueError(
+                    f"The reference must be of shape {(1, X_val.shape[1])} but is ({y.shape})"
+                )
+            else:
+                self.reference = y
         return self
 
     def transform(self, X):
+        X = resize_x(X)
         X_msc = np.zeros_like(X)
         for i in range(X.shape[0]):
             fit = np.polyfit(self.reference, X[i, :], 1, full=True)
-            X_msc[i, :] = (X[i, :] - fit[0][1]) / fit[0][0]
+            X_msc[i, :] = np.divide((X[i, :] - fit[0][1]), fit[0][0])
         return X_msc

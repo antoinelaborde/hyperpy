@@ -51,7 +51,11 @@ def read_raw(file_name: str, hdr_filename: Optional[str] = None):
     return raw
 
 
-def read_specim(file_name: str, white_ref_file_name: Optional[str] = None, dark_ref_file_name: Optional[str] = None):
+def read_specim(
+    file_name: str,
+    white_ref_file_name: Optional[str] = None,
+    dark_ref_file_name: Optional[str] = None,
+):
     """
     reads hyperspectral specim file
 
@@ -83,8 +87,12 @@ def read_specim(file_name: str, white_ref_file_name: Optional[str] = None, dark_
     return reflectance, wavelengths
 
 
-def get_reflectance(raw: np.array, white_ref: np.array, dark_ref: np.array = None,
-                    zero_denominator_replace: float = 1e-9):
+def get_reflectance(
+    raw: np.array,
+    white_ref: np.array,
+    dark_ref: np.array = None,
+    zero_denominator_replace: float = 1e-9,
+):
     """
     calculates reflectance data from raw and reference measurements
 
