@@ -1,5 +1,6 @@
 import ntpath
 import os
+from typing import Optional
 
 import numpy as np
 from scipy.io import loadmat
@@ -22,7 +23,7 @@ def read_mat_file(file_name: str) -> np.array:
     return mat_dict[mat_key]
 
 
-def read_raw(file_name, hdr_filename=None):
+def read_raw(file_name: str, hdr_filename: Optional[str] = None):
     """
     read a .raw file
 
@@ -50,7 +51,7 @@ def read_raw(file_name, hdr_filename=None):
     return raw
 
 
-def read_specim(file_name, white_ref_file_name=None, dark_ref_file_name=None):
+def read_specim(file_name: str, white_ref_file_name: Optional[str] = None, dark_ref_file_name: Optional[str] = None):
     """
     reads hyperspectral specim file
 
@@ -82,7 +83,8 @@ def read_specim(file_name, white_ref_file_name=None, dark_ref_file_name=None):
     return reflectance, wavelengths
 
 
-def get_reflectance(raw, white_ref, dark_ref=None, zero_denominator_replace=1e-9):
+def get_reflectance(raw: np.array, white_ref: np.array, dark_ref: np.array = None,
+                    zero_denominator_replace: float = 1e-9):
     """
     calculates reflectance data from raw and reference measurements
 
@@ -103,7 +105,7 @@ def get_reflectance(raw, white_ref, dark_ref=None, zero_denominator_replace=1e-9
     return reflectance
 
 
-def add_prefix_filename(path_file, prefix):
+def add_prefix_filename(path_file: str, prefix: str):
     """
     adds a prefix to the file name and keep the same path
 
@@ -118,7 +120,7 @@ def add_prefix_filename(path_file, prefix):
     return path_prefix_file
 
 
-def expand_average(raw, expand_size, average_dim=1):
+def expand_average(raw: np.array, expand_size: int, average_dim: int = 1):
     """
     calculate the average on average_dim and expand the result
 
@@ -134,7 +136,7 @@ def expand_average(raw, expand_size, average_dim=1):
     return raw_expand
 
 
-def read_hyspex(file_name, end_white_index, start_white_index=0):
+def read_hyspex(file_name: str, end_white_index: int, start_white_index: int = 0):
     """
     reads hyperspectral specim file
 
@@ -159,7 +161,7 @@ def read_hyspex(file_name, end_white_index, start_white_index=0):
     return reflectance, wavelengths
 
 
-def get_wavelength(file_name):
+def get_wavelength(file_name: str):
     """
     get the wavelength in the .hdr file
 
