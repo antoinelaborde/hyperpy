@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   test:
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/python:3.8.2
     steps:
       - run: apt-get -y install git
       - run: checkout
