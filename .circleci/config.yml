@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   test:
     docker:
-      - image: circleci/<language>:<version TAG>
+      - image: circleci/python:3.8
     steps:
       - run: pip install poetry
       - run: pip install nox
