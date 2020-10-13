@@ -11,6 +11,7 @@ from hyperpy.preprocessing.transformers import (
     MeanCentering,
     SavitzkyGolay,
     MultiplicativeScatterCorrection,
+    Normalization,
 )
 
 
@@ -104,3 +105,44 @@ class TestMultiplicativeScatterCorrection:
         with pytest.raises(ValueError):
             msc.fit(array, np.array([[1.0, 2.0], [3.0, 4.0]]))
         msc.fit(array, np.array([[1.0, 3.0]]))
+
+
+class TestNormalization:
+    def test_l1_normalization(self):
+        array = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+        normalizer = Normalization(norm="l1")
+        tested_array = normalizer.transform(array)
+
+        norm_l1_array = np.array(
+            [
+                [0.33333333, 0.66666667],
+                [0.42857143, 0.57142857],
+                [0.45454545, 0.54545455],
+            ]
+        )
+
+        np.allclose(norm_l1_array, tested_array)
+
+    def test_l2_normalization(self):
+        array = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+        normalizer = Normalization(norm="l2")
+        tested_array = normalizer.transform(array)
+
+        norm_l2_array = np.array(
+            [[0.4472136, 0.89442719], [0.6, 0.8], [0.6401844, 0.76822128]]
+        )
+
+        np.allclose(norm_l2_array, tested_array)
+
+    def test_inf_normalization(self):
+        array = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+        normalizer = Normalization(norm="inf")
+        tested_array = normalizer.transform(array)
+
+        norm_inf_array = np.array([[0.5, 1.0], [0.75, 1.0], [0.83333333, 1.0]])
+
+        np.allclose(norm_inf_array, tested_array)
+
+    def test_unknown_normalization(self):
+        with pytest.raises(ValueError):
+            Normalization(norm="toto")

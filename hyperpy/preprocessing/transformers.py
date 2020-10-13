@@ -6,7 +6,10 @@ from sklearn.base import TransformerMixin
 from hyperpy.preprocessing.utils import savitzky_golay, resize_x
 
 """
-List of transformation to perform:
+Future implementation:
+Baseline removal: http://wiki.eigenvector.com/index.php?title=Wlsbaseline
+https://rasmusbro.wixsite.com/chemometricresources/single-post/2020/02/09/Preprocessing-of-chemometric-data
+
 """
 
 
@@ -176,3 +179,40 @@ class MultiplicativeScatterCorrection(TransformerMixin):
             fit = np.polyfit(self.reference, X[i, :], 1, full=True)
             X_msc[i, :] = np.divide((X[i, :] - fit[0][1]), fit[0][0])
         return X_msc
+
+
+class Normalization(TransformerMixin):
+    """
+    Normalize each row with 1-norm, 2-norm or inf-norm
+    """
+
+    def __init__(self, norm: str = "l1"):
+        NORMALIZATION_NORM = ["l1", "l2", "inf"]
+        self.name = "Normalization"
+        self.short_name = "Norm"
+        if norm.lower() not in NORMALIZATION_NORM:
+            raise ValueError(
+                f"{norm} is an invalid value for norm. Should be among {NORMALIZATION_NORM}"
+            )
+        self.norm = norm
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        X_val = resize_x(X)
+        if self.norm == "l1":
+            norm_matrix = np.tile(
+                np.linalg.norm(X_val, ord=1, axis=1, keepdims=True), (1, X_val.shape[1])
+            )
+        elif self.norm == "l2":
+            norm_matrix = np.tile(
+                np.linalg.norm(X_val, ord=2, axis=1, keepdims=True), (1, X_val.shape[1])
+            )
+        elif self.norm == "inf":
+            norm_matrix = np.tile(
+                np.linalg.norm(X_val, ord=np.inf, axis=1, keepdims=True),
+                (1, X_val.shape[1]),
+            )
+        X_norm = np.divide(X_val, norm_matrix)
+        return X_norm
