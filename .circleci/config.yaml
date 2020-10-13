@@ -1,0 +1,16 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: circleci/<language>:<version TAG>
+    steps:
+      - run: pip install poetry
+      - run: pip install nox
+      - run: poetry install
+      - run: nox
+
+workflows:
+  build_and_test:
+    jobs:
+      - test
