@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: circleci/python:3.8.2
     steps:
-      - run: checkout
+      - checkout
       - run: pip install poetry
       - run: pip install nox
       - run: poetry install
