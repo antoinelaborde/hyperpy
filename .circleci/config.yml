@@ -4,6 +4,7 @@ jobs:
   test:
     docker:
       - image: circleci/python:3.8.2
+      - run: python -m pip install --upgrade pip
     steps:
       - checkout
       - run: python -m pip install --upgrade pip
