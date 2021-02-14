@@ -1,10 +1,12 @@
 import ntpath
 import os
+from typing import Optional
 
 import numpy as np
 from scipy.io import loadmat
 
 from hyperpy.loading.envi_header import read_hdr_file, find_hdr_file
+
 
 def read_mat_file(file_name: str) -> np.array:
     """
@@ -13,10 +15,15 @@ def read_mat_file(file_name: str) -> np.array:
     :return:
     """
     mat_dict: dict = loadmat(file_name)
-    mat_key: str = [key for key in mat_dict.keys() if key not in ['__header__', '__version__', '__globals__']][0]
+    mat_key: str = [
+        key
+        for key in mat_dict.keys()
+        if key not in ["__header__", "__version__", "__globals__"]
+    ][0]
     return mat_dict[mat_key]
 
-def read_raw(file_name, hdr_filename=None):
+
+def read_raw(file_name: str, hdr_filename: Optional[str] = None):
     """
     read a .raw file
 
@@ -26,39 +33,43 @@ def read_raw(file_name, hdr_filename=None):
     raw: numpy array containing raw data.
     """
     if hdr_filename is None:
-        hdr_filename = os.path.splitext(file_name)[0] + '.hdr'
+        hdr_filename = os.path.splitext(file_name)[0] + ".hdr"
     # Read .hdr file
     hdr_file = read_hdr_file(hdr_filename)
-    bands = int(hdr_file['bands'])
-    lines = int(hdr_file['lines'])
-    samples = int(hdr_file['samples'])
-    header_offset = int(hdr_file['header offset'])
+    bands = int(hdr_file["bands"])
+    lines = int(hdr_file["lines"])
+    samples = int(hdr_file["samples"])
+    header_offset = int(hdr_file["header offset"])
     # Read the .raw file
-    with open(file_name, 'rb') as f:
+    with open(file_name, "rb") as f:
         f.seek(header_offset)
         raw = np.fromfile(f, dtype=np.uint16)
     # Reorder data
     raw = raw.reshape(bands * lines, samples)
-    raw = raw.reshape(bands, lines, samples, order='F')
+    raw = raw.reshape(bands, lines, samples, order="F")
     raw = np.transpose(raw, (2, 1, 0))
     return raw
 
 
-def read_specim(file_name, white_ref_file_name=None, dark_ref_file_name=None):
+def read_specim(
+    file_name: str,
+    white_ref_file_name: Optional[str] = None,
+    dark_ref_file_name: Optional[str] = None,
+):
     """
     reads hyperspectral specim file
 
     file_name: str, path to the .raw file.
     white_ref_file_name: str, path to the corresponding white reference .raw file. If None, the file name with "WHITEREF_" before is searched.
-    dark_ref_file_name: str, path to the corresponding dark reference .raw file. If None, the file name with "DARKREF_" before is searched. 
+    dark_ref_file_name: str, path to the corresponding dark reference .raw file. If None, the file name with "DARKREF_" before is searched.
 
     raw: numpy array containing reflectance data.
     wavelengths: numpy array containing wavelength values.
     """
     if white_ref_file_name is None:
-        white_ref_file_name = add_prefix_filename(file_name, 'WHITEREF_')
+        white_ref_file_name = add_prefix_filename(file_name, "WHITEREF_")
     if dark_ref_file_name is None:
-        dark_ref_file_name = add_prefix_filename(file_name, 'DARKREF_')
+        dark_ref_file_name = add_prefix_filename(file_name, "DARKREF_")
 
     # Get raw measurement
     raw = read_raw(file_name)
@@ -76,7 +87,12 @@ def read_specim(file_name, white_ref_file_name=None, dark_ref_file_name=None):
     return reflectance, wavelengths
 
 
-def get_reflectance(raw, white_ref, dark_ref=None, zero_denominator_replace=1e-9):
+def get_reflectance(
+    raw: np.array,
+    white_ref: np.array,
+    dark_ref: np.array = None,
+    zero_denominator_replace: float = 1e-9,
+):
     """
     calculates reflectance data from raw and reference measurements
 
@@ -97,7 +113,7 @@ def get_reflectance(raw, white_ref, dark_ref=None, zero_denominator_replace=1e-9
     return reflectance
 
 
-def add_prefix_filename(path_file, prefix):
+def add_prefix_filename(path_file: str, prefix: str):
     """
     adds a prefix to the file name and keep the same path
 
@@ -112,7 +128,7 @@ def add_prefix_filename(path_file, prefix):
     return path_prefix_file
 
 
-def expand_average(raw, expand_size, average_dim=1):
+def expand_average(raw: np.array, expand_size: int, average_dim: int = 1):
     """
     calculate the average on average_dim and expand the result
 
@@ -123,15 +139,12 @@ def expand_average(raw, expand_size, average_dim=1):
     raw_expand: numpy array.
     """
     raw_average = np.mean(raw, average_dim)
-    raw_expand = np.tile(
-        np.expand_dims(raw_average, 2),
-        (1, 1, expand_size)
-    )
+    raw_expand = np.tile(np.expand_dims(raw_average, 2), (1, 1, expand_size))
     raw_expand = np.transpose(raw_expand, (0, 2, 1))
     return raw_expand
 
 
-def read_hyspex(file_name, end_white_index, start_white_index=0):
+def read_hyspex(file_name: str, end_white_index: int, start_white_index: int = 0):
     """
     reads hyperspectral specim file
 
@@ -156,7 +169,7 @@ def read_hyspex(file_name, end_white_index, start_white_index=0):
     return reflectance, wavelengths
 
 
-def get_wavelength(file_name):
+def get_wavelength(file_name: str):
     """
     get the wavelength in the .hdr file
 
@@ -166,5 +179,5 @@ def get_wavelength(file_name):
     """
     hdr_file_name = find_hdr_file(file_name)
     hdr_file = read_hdr_file(hdr_file_name)
-    wavelength = np.asarray(eval(hdr_file['wavelength']))
+    wavelength = np.asarray(eval(hdr_file["wavelength"]))
     return wavelength

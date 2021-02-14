@@ -6,7 +6,10 @@ from sklearn.base import TransformerMixin
 from hyperpy.preprocessing.utils import savitzky_golay, resize_x
 
 """
-List of transformation to perform:
+Future implementation:
+Baseline removal: http://wiki.eigenvector.com/index.php?title=Wlsbaseline
+https://rasmusbro.wixsite.com/chemometricresources/single-post/2020/02/09/Preprocessing-of-chemometric-data
+
 """
 
 
@@ -17,8 +20,8 @@ class Log(TransformerMixin):
     """
 
     def __init__(self):
-        self.name = 'Logarithmic transformation'
-        self.short_name = 'Log'
+        self.name = "Logarithmic transformation"
+        self.short_name = "Log"
 
     def fit(self, X: np.array, y=None):
         return self
@@ -41,8 +44,8 @@ class Positive(TransformerMixin):
     """
 
     def __init__(self):
-        self.name = 'Positive transformation'
-        self.short_name = 'Pos'
+        self.name = "Positive transformation"
+        self.short_name = "Pos"
 
     def fit(self, X: np.array, y=None):
         return self
@@ -68,8 +71,8 @@ class StandardNormalDeviate(TransformerMixin):
     """
 
     def __init__(self):
-        self.name = 'Standard Normal Deviate'
-        self.short_name = 'SNV'
+        self.name = "Standard Normal Deviate"
+        self.short_name = "SNV"
 
     def fit(self, X: np.array, y=None):
         return self
@@ -96,8 +99,8 @@ class MeanCentering(TransformerMixin):
     """
 
     def __init__(self):
-        self.name = 'Mean centering'
-        self.short_name = 'MR'
+        self.name = "Mean centering"
+        self.short_name = "MR"
 
     def fit(self, X: np.array, y=None) -> np.array:
         return self
@@ -115,14 +118,14 @@ class MeanCentering(TransformerMixin):
         return X_mean_centering
 
 
-class SavistkyGolay(TransformerMixin):
+class SavitzkyGolay(TransformerMixin):
     """
-    Use a Savitsky Golay filter row wise to derivate and/or smooth the signal in row.
+    Use a Savitzky Golay filter row wise to derivate and/or smooth the signal in row.
     """
 
     def __init__(self, window_size=7, polynomial_order=2, derivation_order=1):
-        self.name = 'Savistky Golay filter'
-        self.short_name = 'SG'
+        self.name = "Savitzky Golay filter"
+        self.short_name = "SG"
         self.window_size = window_size
         self.polynomial_order = polynomial_order
         self.derivation_order = derivation_order
@@ -131,8 +134,10 @@ class SavistkyGolay(TransformerMixin):
         return self
 
     def transform(self, X):
-        filter_, X_extended = savitzky_golay(X, self.window_size, self.polynomial_order, self.derivation_order)
-        X_sg = np.apply_along_axis(np.convolve, 1, X_extended, filter_, mode='valid')
+        filter_, X_extended = savitzky_golay(
+            X, self.window_size, self.polynomial_order, self.derivation_order
+        )
+        X_sg = np.apply_along_axis(np.convolve, 1, X_extended, filter_, mode="valid")
         return X_sg
 
 
@@ -144,22 +149,70 @@ class MultiplicativeScatterCorrection(TransformerMixin):
     """
 
     def __init__(self):
-        self.name = 'Multiplicative Scatter Correction'
-        self.short_name = 'MSC'
+        self.name = "Multiplicative Scatter Correction"
+        self.short_name = "MSC"
 
     def fit(self, X, y=None):
         """
         Set the reference spectrum
         """
+        X_val = resize_x(X)
+        if X_val.shape[0] == 1 and y is None:
+            raise ValueError(
+                "A reference spectrum y must be given for X with only one row."
+            )
         if y is None:
             self.reference = np.mean(X, axis=0)
         else:
-            self.reference = y
+            if y.shape != (1, X_val.shape[1]):
+                raise ValueError(
+                    f"The reference must be of shape {(1, X_val.shape[1])} but is ({y.shape})"
+                )
+            else:
+                self.reference = y
         return self
 
     def transform(self, X):
+        X = resize_x(X)
         X_msc = np.zeros_like(X)
         for i in range(X.shape[0]):
             fit = np.polyfit(self.reference, X[i, :], 1, full=True)
-            X_msc[i, :] = (X[i, :] - fit[0][1]) / fit[0][0]
+            X_msc[i, :] = np.divide((X[i, :] - fit[0][1]), fit[0][0])
         return X_msc
+
+
+class Normalization(TransformerMixin):
+    """
+    Normalize each row with 1-norm, 2-norm or inf-norm
+    """
+
+    def __init__(self, norm: str = "l1"):
+        NORMALIZATION_NORM = ["l1", "l2", "inf"]
+        self.name = "Normalization"
+        self.short_name = "Norm"
+        if norm.lower() not in NORMALIZATION_NORM:
+            raise ValueError(
+                f"{norm} is an invalid value for norm. Should be among {NORMALIZATION_NORM}"
+            )
+        self.norm = norm
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        X_val = resize_x(X)
+        if self.norm == "l1":
+            norm_matrix = np.tile(
+                np.linalg.norm(X_val, ord=1, axis=1, keepdims=True), (1, X_val.shape[1])
+            )
+        elif self.norm == "l2":
+            norm_matrix = np.tile(
+                np.linalg.norm(X_val, ord=2, axis=1, keepdims=True), (1, X_val.shape[1])
+            )
+        elif self.norm == "inf":
+            norm_matrix = np.tile(
+                np.linalg.norm(X_val, ord=np.inf, axis=1, keepdims=True),
+                (1, X_val.shape[1]),
+            )
+        X_norm = np.divide(X_val, norm_matrix)
+        return X_norm

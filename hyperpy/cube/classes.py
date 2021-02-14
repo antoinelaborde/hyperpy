@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional
 
 import numpy as np
 
 from hyperpy import exceptions
 from hyperpy.loading import read_specim, read_hyspex, read_mat_file
+
 
 @dataclass
 class SpectralCube:
@@ -36,7 +37,7 @@ class SpectralCube:
         return mat
 
     @staticmethod
-    def from_mat_file(data_file_name: str, domain_file_name: Union[None, str] = None):
+    def from_mat_file(data_file_name: str, domain_file_name: Optional[str] = None):
         """
         Construct a SpectralCube instance from a .mat file containing the data array and a .mat file containing the domain array.
         :param data_file_name:
@@ -71,3 +72,18 @@ class SpectralCube:
         """
         data, domain = read_hyspex(data_file_name, end_white_index, **kwargs)
         return SpectralCube(data=data, domain=domain)
+
+
+def as_cube(
+    data: np.array, spectral_cube: SpectralCube, domain: Optional[np.array] = None
+):
+    """
+    Create a Spectral Cube using the cube shape of an existing Spectral Cube.
+    :param data: 2D numpy array to transform in Spectral Cube.
+    :param spectral_cube: reference spectral cube.
+    :param domain: Optional. If None use the domain of the reference spectral cube.
+    :return: SpectralCube
+    """
+    domain = domain or spectral_cube.domain
+    data_cube = np.reshape(data, spectral_cube.shape)
+    return SpectralCube(data=data_cube, domain=domain)

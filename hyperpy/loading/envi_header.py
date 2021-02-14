@@ -22,17 +22,20 @@ import re
 import sys
 import numpy
 
-ENVI_TO_NUMPY_DTYPE = {'1':  numpy.uint8,
-                       '2':  numpy.int16,
-                       '3':  numpy.int32,
-                       '4':  numpy.float32,
-                       '5':  numpy.float64,
-                       '6':  numpy.complex64,
-                       '9':  numpy.complex128,
-                       '12': numpy.uint16,
-                       '13': numpy.uint32,
-                       '14': numpy.int64,
-                       '15': numpy.uint64}
+ENVI_TO_NUMPY_DTYPE = {
+    "1": numpy.uint8,
+    "2": numpy.int16,
+    "3": numpy.int32,
+    "4": numpy.float32,
+    "5": numpy.float64,
+    "6": numpy.complex64,
+    "9": numpy.complex128,
+    "12": numpy.uint16,
+    "13": numpy.uint32,
+    "14": numpy.int64,
+    "15": numpy.uint64,
+}
+
 
 def find_hdr_file(rawfilename):
     """
@@ -57,6 +60,7 @@ def find_hdr_file(rawfilename):
 
     return hdrfile
 
+
 def read_hdr_file(hdrfilename, keep_case=False):
     """
     Read information from ENVI header file to a dictionary.
@@ -72,8 +76,13 @@ def read_hdr_file(hdrfilename, keep_case=False):
     try:
         hdrfile = open(hdrfilename, "r")
     except:
-        raise IOError("Could not open hdr file " + str(hdrfilename) + \
-                      ". Reason: " + str(sys.exc_info()[1]), sys.exc_info()[2])
+        raise IOError(
+            "Could not open hdr file "
+            + str(hdrfilename)
+            + ". Reason: "
+            + str(sys.exc_info()[1]),
+            sys.exc_info()[2],
+        )
 
     # Read line, split it on equals, strip whitespace from resulting strings
     # and add key/value pair to output
@@ -117,9 +126,10 @@ def read_hdr_file(hdrfilename, keep_case=False):
 
     hdrfile.close()
 
-    output['_comments'] = comments
+    output["_comments"] = comments
 
     return output
+
 
 def write_envi_header(filename, header_dict):
     """
@@ -139,7 +149,7 @@ def write_envi_header(filename, header_dict):
         # Check not comments key (will write separately)
         if key != "_comments":
             # If it contains commas likely a list so put in curly braces
-            if str(header_dict[key]).count(',') > 0:
+            if str(header_dict[key]).count(",") > 0:
                 hdrfile.write("{} = {{{}}}\n".format(key, header_dict[key]))
             else:
                 # Write key at start of line
@@ -147,7 +157,7 @@ def write_envi_header(filename, header_dict):
 
     # Write out comments at the end
     # Check they start with ';' and add one if they don't
-    for comment_line in header_dict['_comments'].split('\n'):
+    for comment_line in header_dict["_comments"].split("\n"):
         if re.search("^;", comment_line) is None:
             comment_line = ";{}\n".format(comment_line)
         else:
