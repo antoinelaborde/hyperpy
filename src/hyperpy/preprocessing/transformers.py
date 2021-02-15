@@ -3,7 +3,7 @@ from copy import deepcopy
 import numpy as np
 from sklearn.base import TransformerMixin
 
-from hyperpy.preprocessing.utils import savitzky_golay, resize_x
+from src.hyperpy.preprocessing.utils import savitzky_golay, resize_x
 
 """
 Future implementation:

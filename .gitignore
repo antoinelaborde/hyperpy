@@ -6,3 +6,6 @@ test-data/
 
 *.ipynb_checkpoints
 *.pyc
+
+/venv
+/tutorial/tests

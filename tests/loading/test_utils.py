@@ -3,8 +3,8 @@ from unittest.mock import MagicMock
 
 import numpy as np
 
-from hyperpy.loading import read_mat_file
-from hyperpy.loading.utils import (
+from src.hyperpy import read_mat_file
+from src.hyperpy import (
     read_raw,
     read_specim,
     get_reflectance,

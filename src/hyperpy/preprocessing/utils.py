@@ -1,5 +1,5 @@
 import numpy as np
-from hyperpy import exceptions
+from src.hyperpy import exceptions
 
 
 def savitzky_golay(y, window_size, polynomial_order, derivation_order=0):

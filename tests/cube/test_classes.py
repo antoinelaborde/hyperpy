@@ -2,8 +2,8 @@ from unittest import mock
 
 import pytest
 import numpy as np
-from hyperpy import exceptions
-from hyperpy.cube.classes import SpectralCube
+from src.hyperpy import exceptions
+from src.hyperpy.cube.classes import SpectralCube
 
 
 class TestSpectralCube:

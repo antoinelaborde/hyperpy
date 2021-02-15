@@ -3,8 +3,8 @@ import time
 import subprocess
 import webbrowser
 
-from hyperpy.utils import serve
-from hyperpy.visu import utils
+from src.hyperpy import serve
+from src.hyperpy.visu import utils
 
 ## TO DO:
 # Make the function serve a class.

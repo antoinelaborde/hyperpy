@@ -1,4 +1,4 @@
-from hyperpy import __version__
+from src.hyperpy import __version__
 
 
 def test_version():

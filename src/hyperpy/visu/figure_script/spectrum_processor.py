@@ -5,7 +5,7 @@ from bokeh.layouts import column, row
 from bokeh.io import curdoc
 from bokeh.models.widgets import Slider
 from bokeh.models import Select, Button, MultiSelect
-from hyperpy.preprocessing import transformers
+from src.hyperpy.preprocessing import transformers
 from sklearn.pipeline import Pipeline
 import numpy as np
 
