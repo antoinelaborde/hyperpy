@@ -5,7 +5,7 @@ from typing import Optional
 import numpy as np
 from scipy.io import loadmat
 
-from src.hyperpy.loading.envi_header import read_hdr_file, find_hdr_file
+from hyperpy.loading.envi_header import read_hdr_file, find_hdr_file
 
 
 def read_mat_file(file_name: str) -> np.array:

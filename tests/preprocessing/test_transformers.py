@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 import numpy as np
 import pytest
 
-from src.hyperpy.preprocessing import (
+from hyperpy.preprocessing import (
     Log,
     Positive,
     StandardNormalDeviate,

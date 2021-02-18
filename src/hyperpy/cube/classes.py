@@ -3,8 +3,8 @@ from typing import Optional
 
 import numpy as np
 
-from src.hyperpy import exceptions
-from src.hyperpy import read_specim, read_hyspex, read_mat_file
+from hyperpy import exceptions
+from hyperpy import read_specim, read_hyspex, read_mat_file
 
 
 @dataclass

@@ -9,3 +9,5 @@ test-data/
 
 /venv
 /tutorial/tests
+
+.coverage*
