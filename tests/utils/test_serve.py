@@ -57,15 +57,13 @@ class TestUpdatePortUse:
 
     @mock.patch("hyperpy.utils.serve.pd.read_csv")
     @mock.patch("hyperpy.utils.serve.os.path.isfile")
-    def test_update_port_use_existing(self, mock_fromdict, mock_isfile, mock_to_csv, mock_read_csv):
+    def test_update_port_use_existing(self, mock_isfile, mock_read_csv):
         mock_isfile.return_value = False
         mock_read_csv.return_value = pd.DataFrame({"port": [0],
                                                    "pid": [1],
                                                    "look_file": ['file'],
                                                    "time": [12]})
         update_port_use(42, 42, 'new_file', 'path')
-        mock_to_csv.assert_called_once()
-        mock_fromdict.assert_called_once()
         # TODO
 
 

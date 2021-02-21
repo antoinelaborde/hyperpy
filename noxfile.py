@@ -5,7 +5,7 @@ locations = "hyperpy", "tests", "noxfile.py"
 @nox.session(python=["3.8"])
 def tests(session):
     args = session.posargs
-    session.install(".")
+    session.install(".[test]")
     session.run("pytest", *args)
 
 
