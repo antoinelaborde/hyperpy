@@ -1,12 +1,12 @@
 import nox
 
-locations = "hyperpy", "tests", "noxfile.py"
+locations = "."
 
 
 @nox.session(python=["3.8"])
 def tests(session):
     args = session.posargs
-    session.run("poetry", "install", external=True)
+    session.install(".[test]")
     session.run("pytest", *args)
 
 

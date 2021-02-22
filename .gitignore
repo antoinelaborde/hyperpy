@@ -6,3 +6,17 @@ test-data/
 
 *.ipynb_checkpoints
 *.pyc
+*.html
+
+# Coverage files
+coverage_*.js
+favicon_*.png
+jquery*.js
+htmlcov/
+.coverage*
+
+
+
+/venv
+/tutorial/tests
+

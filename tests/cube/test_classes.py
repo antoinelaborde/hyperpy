@@ -1,9 +1,11 @@
 from unittest import mock
 
-import pytest
 import numpy as np
+import pytest
+from mock import Mock
+
 from hyperpy import exceptions
-from hyperpy.cube.classes import SpectralCube
+from hyperpy.cube.classes import SpectralCube, as_cube
 
 
 class TestSpectralCube:
@@ -99,7 +101,7 @@ class TestSpectralCube:
         np.allclose(spectral_cube.domain, test_domain)
 
     @mock.patch("hyperpy.cube.classes.read_hyspex")
-    def test_from_specim(self, mocked_read_hyspex):
+    def test_from_hyspex(self, mocked_read_hyspex):
         test_cube = np.array(
             [
                 [[1, 2], [3, 4], [5, 6]],
@@ -114,3 +116,18 @@ class TestSpectralCube:
 
         np.allclose(spectral_cube.data, test_cube)
         np.allclose(spectral_cube.domain, test_domain)
+
+
+class TestAsCube:
+    @mock.patch("hyperpy.cube.classes.SpectralCube.__new__")
+    def test_as_cube(self, mocked_spectral_cube_new):
+        data = [[1, 2], [3, 4]]
+        domain = [1]
+        spectral_cube = Mock(spec=SpectralCube, shape=(4, 1))
+        as_cube(data, spectral_cube, domain=domain)
+
+        reshaped_array = np.array([[1], [2], [2], [3]])
+
+        assert mocked_spectral_cube_new.called_once_with(
+            data=reshaped_array, domain=[1]
+        )

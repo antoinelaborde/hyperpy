@@ -1,5 +1,7 @@
 import os
 import pickle
+from typing import Any, Union
+
 import pandas as pd
 import time
 import socket
@@ -13,13 +15,12 @@ import numpy as np
 # - Add a function to get the status of all runing server: data/figure_script/host
 
 
-def create_tmp_dir(tmp_folder_name, root_tmp_path="/tmp"):
+def create_tmp_dir(tmp_folder_name: str, root_tmp_path: str = "/tmp") -> str:
     """
-    create a temporary directory
-
-    tmp_folder_name: str, name of the directory
-
-    path: str, complete path
+    Create a temporary directory
+    :param tmp_folder_name: name of the temporary folder
+    :param root_tmp_path: name of the root temporary path
+    :return: path the temporary dir
     """
     path = os.path.join(root_tmp_path, tmp_folder_name)
     if not (os.path.isdir(path)):
@@ -27,33 +28,31 @@ def create_tmp_dir(tmp_folder_name, root_tmp_path="/tmp"):
     return path
 
 
-def save_tmp(data, name, tmp_path):
+def save_tmp(data: Any, tmp_filename: str, tmp_path: str) -> str:
     """
-    save with pickle data under name in the temporary dir in tmp_path
-
-    data: data to pickle
-    name: str, name of the tmp file.
-    tmp_path: str, path to the tmp file.
-
-    path: str, path to the tmp file.
+    Pickle data in the temporary folder.
+    :param data: data to be pickled.
+    :param tmp_filename: name of the tmp file.
+    :param tmp_path: tmp file path.
+    :return: path
     """
-
-    path = os.path.join(tmp_path, name)
+    path = os.path.join(tmp_path, tmp_filename)
     if not (os.path.isfile(path)):
         with open(path, "wb") as f:
             pickle.dump(data, f)
     return path
 
 
-def update_port_use(port, pid, look_file_path, tmp_path):
+def update_port_use(
+    port: Union[int, float], pid: Union[int, float], look_file_path: str, tmp_path: str
+):
     """
-    create or update a csv file for port use information
-
-    port: int, number of the port.
-    pid: int, PID of the process.
-    look_file_path: str, path to the looked file.
-    tmp_path: str, tmp path to save the file in.
-
+    Put port use information in a csv file.
+    :param port: port number (can be nan for init)
+    :param pid: process' PID (can be nan for init)
+    :param look_file_path: path to the look file
+    :param tmp_path:
+    :return:
     """
     # Save a temp file with the port used and their PID
     if os.path.isfile(tmp_path):
@@ -80,25 +79,22 @@ def update_port_use(port, pid, look_file_path, tmp_path):
         port_use.to_csv(tmp_path, index=False)
 
 
-def is_port_in_use(port):
+def is_port_in_use(port: int) -> bool:
     """
-    check if port is in use
-
-    bool: true if port is used
+    Test if the localhost port number is used.
+    :param port: port number
+    :return: boolean
     """
-    # To check if the port is in use
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         return s.connect_ex(("localhost", port)) == 0
 
 
-def get_port_use(info_file_path, port=None):
+def get_port_use(info_file_path: str, port=None) -> dict:
     """
-    get port_use information
-
-    info_file_path: str, path to the file.
-    port: int or None, number of the port. If None, returns the complete file.
-
-    return dict info.
+    Get information of port use: port/pid/look_file/time
+    :param info_file_path: path to the info file.
+    :param port: port number
+    :return: dict with info
     """
     if os.path.isfile(info_file_path):
         port_use = pd.read_csv(info_file_path)
@@ -113,16 +109,15 @@ def get_port_use(info_file_path, port=None):
         output = port_use_filter.sort_values("time", ascending=False).iloc[0].to_dict()
         return output
     else:
-        return port_use.to_dict()
+        return port_use.to_dict("list")
 
 
-def free_port(info_file, port):
+def free_port(info_file_path: str, port: int):
     """
-    kill the process linked to the port
-
-    info_file_path: str, path to the port use file.
-    port: int, port number.
-
+    Kill the process linked to the localhost port
+    :param info_file_path: path to the info file.
+    :param port: port number
+    :return:
     """
-    info = get_port_use(info_file, port)
+    info = get_port_use(info_file_path, port)
     os.kill(info["pid"], signal.SIGTERM)

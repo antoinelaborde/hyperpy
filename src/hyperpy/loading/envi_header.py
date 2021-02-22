@@ -37,28 +37,29 @@ ENVI_TO_NUMPY_DTYPE = {
 }
 
 
-def find_hdr_file(rawfilename):
+def find_hdr_file(raw_file_name: str) -> str:
     """
-    Find ENVI header file associated with data file
+    Return the header file corresponding to the raw file name
+    :param raw_file_name: filename of the raw data file
+    :return: hdr_filename
     """
-    if not os.path.isfile(rawfilename):
-        raise IOError("Could not find file " + rawfilename)
-
+    if not os.path.isfile(raw_file_name):
+        raise IOError(f"Could not find file {raw_file_name}")
     # Get the filename without path or extension
-    filename = os.path.basename(rawfilename)
-    filesplit = os.path.splitext(filename)
-    filebase = filesplit[0]
-    dirname = os.path.dirname(rawfilename)
+    filename = os.path.basename(raw_file_name)
+    file_split = os.path.splitext(filename)
+    file_base = file_split[0]
+    dir_name = os.path.dirname(raw_file_name)
 
     # See if we can find the header file to use
-    if os.path.isfile(os.path.join(dirname, filebase + ".hdr")):
-        hdrfile = os.path.join(dirname, filebase + ".hdr")
-    elif os.path.isfile(os.path.join(dirname, filename + ".hdr")):
-        hdrfile = os.path.join(dirname, filename + ".hdr")
+    if os.path.isfile(os.path.join(dir_name, file_base + ".hdr")):
+        hdr_filename = os.path.join(dir_name, file_base + ".hdr")
+    elif os.path.isfile(os.path.join(dir_name, filename + ".hdr")):
+        hdr_filename = os.path.join(dir_name, filename + ".hdr")
     else:
-        hdrfile = None
+        hdr_filename = None
 
-    return hdrfile
+    return hdr_filename
 
 
 def read_hdr_file(hdrfilename, keep_case=False):

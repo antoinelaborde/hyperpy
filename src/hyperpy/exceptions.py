@@ -40,7 +40,7 @@ class WrongDomainDimension(DomainError):
         self.data_shape = data_shape
 
 
-class ArrayDimensionError(HyperspectralError):
+class ArrayDimensionError(DataDimensionError):
     """
     Error caused by a numpy array with a wrong shape
     """

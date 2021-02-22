@@ -4,7 +4,7 @@ from typing import Optional
 import numpy as np
 
 from hyperpy import exceptions
-from hyperpy.loading import read_specim, read_hyspex, read_mat_file
+from hyperpy import read_specim, read_hyspex, read_mat_file
 
 
 @dataclass
