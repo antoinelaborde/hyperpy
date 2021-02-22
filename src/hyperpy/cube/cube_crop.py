@@ -10,7 +10,9 @@ class RectangleMask:
     Numpy array with rectangle mask to be applied on 2d or 3d array.
     """
 
-    def __init__(self, shape: Tuple[int, int], x_mask: Tuple[int, int], y_mask: Tuple[int, int]):
+    def __init__(
+        self, shape: Tuple[int, int], x_mask: Tuple[int, int], y_mask: Tuple[int, int]
+    ):
         """
         :param shape: (x_shape, y_shape) for the original array.
         :param x_mask: first and last indexes for the mask on the 0-axis.
@@ -27,7 +29,9 @@ class RectangleMask:
         """
         self.rectangle_mask = np.zeros(self.shape)
         self.rectangle_mask[:] = False
-        self.rectangle_mask[self.x_mask[0]: self.x_mask[1], self.y_mask[0]: self.y_mask[1]] = True
+        self.rectangle_mask[
+            self.x_mask[0] : self.x_mask[1], self.y_mask[0] : self.y_mask[1]
+        ] = True
         return self.rectangle_mask
 
     def apply(self, array: np.array) -> np.array:
@@ -40,12 +44,12 @@ class RectangleMask:
             raise ArrayDimensionError(array.shape, self.shape)
         if len(array.shape) == 3:
             masked_array = array[
-                           self.x_mask[0]: self.x_mask[1], self.y_mask[0]: self.y_mask[1], :
-                           ]
+                self.x_mask[0] : self.x_mask[1], self.y_mask[0] : self.y_mask[1], :
+            ]
         elif len(array.shape) == 2:
             masked_array = array[
-                           self.x_mask[0]: self.x_mask[1], self.y_mask[0]: self.y_mask[1]
-                           ]
+                self.x_mask[0] : self.x_mask[1], self.y_mask[0] : self.y_mask[1]
+            ]
         else:
             raise DataDimensionError(len(array.shape), "2 or 3")
         return masked_array

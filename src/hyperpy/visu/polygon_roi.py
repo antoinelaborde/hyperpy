@@ -162,7 +162,7 @@ class MaskCreator(object):
                     self.poly.xy = np.array(
                         list(self.poly.xy[: i + 1])
                         + [(event.xdata, event.ydata)]
-                        + list(self.poly.xy[i + 1:])
+                        + list(self.poly.xy[i + 1 :])
                     )
                     self._update_line()
                     break
@@ -170,10 +170,10 @@ class MaskCreator(object):
 
     def motion_notify_callback(self, event):
         ignore = (
-                not self.showverts
-                or event.inaxes is None
-                or event.button != 1
-                or self._ind is None
+            not self.showverts
+            or event.inaxes is None
+            or event.button != 1
+            or self._ind is None
         )
         if ignore:
             return

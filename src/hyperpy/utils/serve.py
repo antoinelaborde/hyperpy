@@ -15,7 +15,7 @@ import numpy as np
 # - Add a function to get the status of all runing server: data/figure_script/host
 
 
-def create_tmp_dir(tmp_folder_name: str, root_tmp_path: str="/tmp") -> str:
+def create_tmp_dir(tmp_folder_name: str, root_tmp_path: str = "/tmp") -> str:
     """
     Create a temporary directory
     :param tmp_folder_name: name of the temporary folder
@@ -43,7 +43,9 @@ def save_tmp(data: Any, tmp_filename: str, tmp_path: str) -> str:
     return path
 
 
-def update_port_use(port: Union[int, float], pid: Union[int, float], look_file_path: str, tmp_path: str):
+def update_port_use(
+    port: Union[int, float], pid: Union[int, float], look_file_path: str, tmp_path: str
+):
     """
     Put port use information in a csv file.
     :param port: port number (can be nan for init)
@@ -107,7 +109,7 @@ def get_port_use(info_file_path: str, port=None) -> dict:
         output = port_use_filter.sort_values("time", ascending=False).iloc[0].to_dict()
         return output
     else:
-        return port_use.to_dict('list')
+        return port_use.to_dict("list")
 
 
 def free_port(info_file_path: str, port: int):

@@ -1,6 +1,7 @@
 import nox
 
-locations = "hyperpy", "tests", "noxfile.py"
+locations = "."
+
 
 @nox.session(python=["3.8"])
 def tests(session):

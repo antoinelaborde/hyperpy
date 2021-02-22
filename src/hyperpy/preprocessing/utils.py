@@ -5,8 +5,9 @@ import numpy as np
 from hyperpy import exceptions
 
 
-def savitzky_golay(data: np.array, window_size: int, polynomial_order: int, derivation_order: int = 0) -> Tuple[
-    np.array, np.array]:
+def savitzky_golay(
+    data: np.array, window_size: int, polynomial_order: int, derivation_order: int = 0
+) -> Tuple[np.array, np.array]:
     """
     Compute a Savistky Golay filter to apply row wise and extrapolated data to compensate for filter loss.
     :param data: numpy array containing data in rows.
@@ -28,11 +29,12 @@ def savitzky_golay(data: np.array, window_size: int, polynomial_order: int, deri
     # values taken from the signal itself
     # firstvals = y[0] - np.abs(y[1:half_window + 1][::-1] - y[0])
     firstvals = np.tile(data[:, 0], (half_window, 1)).T - np.abs(
-        data[:, 1: half_window + 1][:, ::-1] - np.tile(data[:, 0], (half_window, 1)).T
+        data[:, 1 : half_window + 1][:, ::-1] - np.tile(data[:, 0], (half_window, 1)).T
     )
     # lastvals = y[-1] + np.abs(y[-half_window - 1:-1][::-1] - y[-1])
     lastvals = np.tile(data[:, -1], (half_window, 1)).T + np.abs(
-        data[:, -half_window - 1: -1][:, ::-1] - np.tile(data[:, -1], (half_window, 1)).T
+        data[:, -half_window - 1 : -1][:, ::-1]
+        - np.tile(data[:, -1], (half_window, 1)).T
     )
     data_extended = np.concatenate((firstvals, data, lastvals), axis=1)
     return filter_values, data_extended

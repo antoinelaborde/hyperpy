@@ -126,10 +126,7 @@ class TestAsCube:
         spectral_cube = Mock(spec=SpectralCube, shape=(4, 1))
         as_cube(data, spectral_cube, domain=domain)
 
-        reshaped_array = np.array([[1],
-                                [2],
-                                [2],
-                                [3]])
+        reshaped_array = np.array([[1], [2], [2], [3]])
 
         assert mocked_spectral_cube_new.called_once_with(
             data=reshaped_array, domain=[1]

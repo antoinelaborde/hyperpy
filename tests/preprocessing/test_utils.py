@@ -11,9 +11,9 @@ class TestSavitzkyGolay:
 
         filters, data_extended = savitzky_golay(data, 3, 0, 0)
         np.testing.assert_almost_equal(filters, np.array([1 / 3, 1 / 3, 1 / 3]))
-        np.testing.assert_almost_equal(data_extended, np.array([
-            [0, 1, 2, 3, 4, 5, 6], [0, 1, 2, 3, 4, 5, 6]
-        ]))
+        np.testing.assert_almost_equal(
+            data_extended, np.array([[0, 1, 2, 3, 4, 5, 6], [0, 1, 2, 3, 4, 5, 6]])
+        )
 
 
 class TestResizeX:
