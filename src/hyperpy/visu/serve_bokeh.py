@@ -1,7 +1,10 @@
 import os
+import signal
 import time
 import subprocess
+import sys
 import webbrowser
+from typing import Any, Optional
 
 from hyperpy.utils import serve
 from hyperpy.visu import utils
@@ -13,12 +16,162 @@ from hyperpy.visu import utils
 # Write a readme.
 
 
-def get_figure_script(figure_script):
+
+
+class FigureServer:
     """
-    get the script path from figure_script name
+    A class that groups Figure served with Bokeh.
     """
-    script_path = utils.check_figure_file(figure_script)
-    return script_path
+    def __init__(self):
+        self.figure_list = []
+
+    def append(self, figure):
+        self.figure_list.append(
+            figure
+        )
+
+    def remove(self, figure):
+        """
+        Remove the figure from the server list
+        :param figure:
+        :return:
+        """
+        for figure_server in self.figure_list:
+            if figure_server.id == figure.id:
+                self.figure_list.remove(figure_server)
+
+    def close_all(self):
+        """
+        Close all figures
+        :return:
+        """
+        for figure in self.figure_list:
+            os.kill(figure.sub_process.pid, signal.SIGTERM)
+
+
+class HyperFig:
+    def __init__(self, server: FigureServer, figure_script: str, data: Any, local_host_port: int=8080):
+        # Comment: maybe problematic to do all of this in the init, should be done in a .compile() method ?
+
+        self.server = server
+        # Choose a free port for Bokeh serve
+        self.local_host_port = self._choose_port(local_host_port)
+        # Find the figure script
+        self.figure_script = figure_script
+        self.figure_name = os.path.split(self.figure_script)[1].replace(".py", "")
+        # Create a tmp directory bokeh
+        self.tmp_path = serve.create_tmp_dir("bokeh")
+        # Set the data
+        self.set_data(data)
+        # Serve log file path
+        self.log_serve_file = os.path.join(self.tmp_path, "bokeh_serve_log.csv")
+        # Make ID
+        self.id = f"{self.figure_name}-{self.data_filename}"
+
+    def set_data(self, data: Any):
+        """
+        Set the data attribute and save the data in bokeh tmp folder
+        :param data:
+        :return:
+        """
+        self.data = data
+        self.data_filename = str(hash(str(self.data)) % ((sys.maxsize + 1) * 2))
+        self.data_path = serve.save_tmp(self.data, self.data_filename, self.tmp_path)
+
+    def _check_port_in_use(self, port: Optional[int]) -> bool:
+        """
+        Check if port is in used
+        :param port: port number (optional)
+        :return:
+        """
+        port = port or self.local_host_port
+        return serve.is_port_in_use(port)
+
+    def _choose_port(self, port: int) -> int:
+        """
+        Check if the current port is in used and change it if needed.
+        :param port: port number
+        :return:
+        """
+        while self._check_port_in_use(port):
+            port += 1
+        return port
+
+    def _set_command_line(self):
+        """
+        Set the command line for the subprocess
+        :return:
+        """
+        self.command_line = [
+            "bokeh",
+            "serve",
+            self.figure_script,
+            "--port",
+            str(self.local_host_port),
+            "--args",
+            self.data_path,
+        ]
+
+    def _check_already_served(self) -> bool:
+        """
+        Returns True if the figure id is already served.
+        :return:
+        """
+        for figure in self.server.figure_list:
+            if figure.id == self.id:
+                return True
+        return False
+
+    def serve(self):
+        """
+        Launch the subprocess
+        :return:
+        """
+        if not(self._check_already_served()):
+            self._set_command_line()
+            sub_process = subprocess.Popen(
+                self.command_line, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+            )
+            self.sub_process = sub_process
+            self.add_to_server()
+        else:
+            print(f"{self.id} is not served because the server already serves it.")
+
+    def add_to_server(self):
+        """
+        Add the figure to the server list
+        :return:
+        """
+        self.server.append(self)
+
+    def open(self):
+        """
+        Open the web browser with the figure
+        :return:
+        """
+        webbrowser.open_new(f"http://localhost:{self.local_host_port}/{self.figure_name}")
+
+    def close(self):
+        """
+        Kill the subprocess
+        :return:
+        """
+        os.kill(self.sub_process.pid, signal.SIGTERM)
+        self.server.remove(self)
+
+    def serve_open(self):
+        """
+        Serve and open the browser
+        :return:
+        """
+        self.serve()
+        time.sleep(1)
+        self.open()
+
+
+
+
+
 
 
 def serve_bokeh_figure(data, script_path, port=8080, max_server=10):
