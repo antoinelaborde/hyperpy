@@ -8,6 +8,8 @@ plt.style.use("ggplot")
 from matplotlib.path import Path
 from matplotlib.patches import Polygon
 
+#Requires: matplotlib==3.3.2 / pyqt5==5.15.1
+
 
 def cube_polygon_roi(image, cmap="Greys", aspect=2):
     """
