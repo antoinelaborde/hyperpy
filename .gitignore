@@ -21,3 +21,4 @@ htmlcov/
 /tutorial/tests
 
 *.csv
+.DS_Store
