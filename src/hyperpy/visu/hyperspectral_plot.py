@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 from hyperpy.cube.classes import SpectralCube
 
+#Requires: matplotlib==3.3.2 / pyqt5==5.15.1
 
 def cube_slice(
     spectral_cube: SpectralCube, domain_index: int, title: Union[str, None] = None
