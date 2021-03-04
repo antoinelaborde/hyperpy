@@ -14,7 +14,9 @@ hv.extension('bokeh')
 
 @dataclass
 class DynamicFigure:
-    layout: None
+
+    def __init__(self):
+        self.layout = None
 
     def serve(self):
         """
@@ -64,7 +66,7 @@ class PCAFigure(DynamicFigure):
         n_components = self.nbr_components or min(data_matrix.shape)
         self.pca = PCA(n_components=n_components)
         scores = self.pca.fit_transform(data_matrix)
-        self.scores_cube = scores.reshape(map_shape[0] + (n_components,))
+        self.scores_cube = scores.reshape(map_shape + (n_components,))
 
 
 @dataclass

@@ -23,10 +23,10 @@ class DomainSelection(TransformerMixin):
         self.domain = domain
 
     def fit(self, X: np.array, y=None):
-        self.domain = self.domain[self.selection]
         return self
 
     def transform(self, X: np.array) -> np.array:
+        self.domain = self.domain[self.selection]
         return X[:, self.selection]
 
 class Log(TransformerMixin):

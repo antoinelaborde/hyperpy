@@ -6,6 +6,7 @@ from .transformers import (
     SavitzkyGolay,
     MultiplicativeScatterCorrection,
     Normalization,
+    DomainSelection
 )
 
 from .utils import spectral_process

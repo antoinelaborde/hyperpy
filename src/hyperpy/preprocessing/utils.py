@@ -18,13 +18,14 @@ def spectral_process(spectral_cube: SpectralCube,
     :return:
     """
     spectral_matrix = spectral_cube.get_matrix()
-    pipeline = make_pipeline(transformers)
+    pipeline = make_pipeline(*transformers)
     transformed_matrix = pipeline.transform(spectral_matrix)
+    new_domain = spectral_cube.domain
     for transformer in transformers:
         if hasattr(transformer, 'domain'):
             new_domain = transformer.domain
-
-    return as_cube(transformed_matrix, domain=new_domain)
+    transformed_cube = transformed_matrix.reshape((spectral_cube.shape[:2]+(new_domain.shape[0],)))
+    return SpectralCube(transformed_cube, domain=new_domain)
 
 
 def savitzky_golay(
