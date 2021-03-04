@@ -7,3 +7,5 @@ from .transformers import (
     MultiplicativeScatterCorrection,
     Normalization,
 )
+
+from .utils import spectral_process
