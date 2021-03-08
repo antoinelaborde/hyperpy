@@ -5,7 +5,7 @@ import pytest
 from mock import Mock
 
 from hyperpy import exceptions
-from hyperpy.cube.classes import SpectralCube, as_cube
+from hyperpy.cube.spectral_cube import SpectralCube, as_cube
 
 
 class TestSpectralCube:
