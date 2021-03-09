@@ -20,3 +20,6 @@ htmlcov/
 /venv
 /tutorial/tests
 
+*.csv
+.DS_Store
+

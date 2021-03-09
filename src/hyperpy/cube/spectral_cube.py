@@ -7,6 +7,9 @@ from hyperpy import exceptions
 from hyperpy import read_specim, read_hyspex, read_mat_file
 
 
+## TODO:
+# Cube class with data, domain name, get matrix, post init with check dimension
+
 @dataclass
 class SpectralCube:
     data: np.array
@@ -23,7 +26,7 @@ class SpectralCube:
         if len(self.domain.shape) != 1:
             raise exceptions.DataDimensionError(len(self.domain.shape), 1)
         # Check domain dimension
-        self.width, self.heigh, data_domain = self.data.shape
+        self.width, self.height, data_domain = self.data.shape
         if data_domain != self.domain.shape[0]:
             raise exceptions.WrongDomainDimension(self.domain.shape, self.data.shape)
         self.shape = self.data.shape

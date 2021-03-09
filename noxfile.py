@@ -5,9 +5,9 @@ locations = "."
 
 @nox.session(python=["3.8"])
 def tests(session):
-    args = session.posargs
-    session.install(".[test]")
-    session.run("pytest", *args)
+    #session.run("pip3", "install", ".[test]")
+    #session.run("pytest")
+    pass
 
 
 @nox.session(python=["3.8"])

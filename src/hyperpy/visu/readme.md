@@ -1,5 +1,10 @@
 # Visualization tools
 
+## Holoviews figure management
+Although Panel requires bokeh>=2.3, bokeh==2.2.1 must be used so that the figure serving code works properly.
+Errors such that: "str" has no dataspecs() may raise.
+
+
 ## Requirements
 hyperspectralpython needs to be installed in the global python environment.
 The subprocess that launches the bokeh serve takes the global python environment and needs to know hyperspectralpython and its dependencies. 

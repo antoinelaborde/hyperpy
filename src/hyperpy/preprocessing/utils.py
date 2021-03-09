@@ -1,12 +1,35 @@
 from typing import Tuple
 
 import numpy as np
+from sklearn.base import TransformerMixin
 
 from hyperpy import exceptions
+from hyperpy.cube import SpectralCube, as_cube
+
+from sklearn.pipeline import make_pipeline
+
+
+def spectral_process(spectral_cube: SpectralCube,
+                     transformers: Tuple[TransformerMixin]) -> SpectralCube:
+    """
+    Apply transformers to a spectral cube and return a new spectral cube.
+    :param spectral_cube:
+    :param transformers:
+    :return:
+    """
+    spectral_matrix = spectral_cube.get_matrix()
+    pipeline = make_pipeline(*transformers)
+    transformed_matrix = pipeline.transform(spectral_matrix)
+    new_domain = spectral_cube.domain
+    for transformer in transformers:
+        if hasattr(transformer, 'domain'):
+            new_domain = transformer.domain
+    transformed_cube = transformed_matrix.reshape((spectral_cube.shape[:2]+(new_domain.shape[0],)))
+    return SpectralCube(transformed_cube, domain=new_domain)
 
 
 def savitzky_golay(
-    data: np.array, window_size: int, polynomial_order: int, derivation_order: int = 0
+        data: np.array, window_size: int, polynomial_order: int, derivation_order: int = 0
 ) -> Tuple[np.array, np.array]:
     """
     Compute a Savistky Golay filter to apply row wise and extrapolated data to compensate for filter loss.
@@ -29,11 +52,11 @@ def savitzky_golay(
     # values taken from the signal itself
     # firstvals = y[0] - np.abs(y[1:half_window + 1][::-1] - y[0])
     firstvals = np.tile(data[:, 0], (half_window, 1)).T - np.abs(
-        data[:, 1 : half_window + 1][:, ::-1] - np.tile(data[:, 0], (half_window, 1)).T
+        data[:, 1: half_window + 1][:, ::-1] - np.tile(data[:, 0], (half_window, 1)).T
     )
     # lastvals = y[-1] + np.abs(y[-half_window - 1:-1][::-1] - y[-1])
     lastvals = np.tile(data[:, -1], (half_window, 1)).T + np.abs(
-        data[:, -half_window - 1 : -1][:, ::-1]
+        data[:, -half_window - 1: -1][:, ::-1]
         - np.tile(data[:, -1], (half_window, 1)).T
     )
     data_extended = np.concatenate((firstvals, data, lastvals), axis=1)

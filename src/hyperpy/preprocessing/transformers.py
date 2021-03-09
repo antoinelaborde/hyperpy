@@ -12,6 +12,22 @@ https://rasmusbro.wixsite.com/chemometricresources/single-post/2020/02/09/Prepro
 
 """
 
+class DomainSelection(TransformerMixin):
+    """
+    Select a subspace of domain.
+    """
+    def __init__(self, selection: np.array, domain: np.array):
+        self.name = "Domain selection"
+        self.short_name = "domain selection"
+        self.selection = selection
+        self.domain = domain
+
+    def fit(self, X: np.array, y=None):
+        return self
+
+    def transform(self, X: np.array) -> np.array:
+        self.domain = self.domain[self.selection]
+        return X[:, self.selection]
 
 class Log(TransformerMixin):
     """

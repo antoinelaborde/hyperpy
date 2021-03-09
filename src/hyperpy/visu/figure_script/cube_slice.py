@@ -35,15 +35,18 @@ elif cube_show.shape[0] <= cube_show.shape[1]:
 init_slice = int(cube_show.shape[2] / 2)
 source = ColumnDataSource(data=dict(image=[cube_show[:, :, init_slice]]))
 
-p = figure(title=cube_name, plot_width=figure_width, plot_height=figure_height)
+#p = figure(title=cube_name, plot_width=max_figure_width, plot_height=max_figure_height)
+p = figure(title=cube_name)
+
 p.x_range.range_padding = p.y_range.range_padding = 0
 p.image(
     image="image",
     source=source,
     x=0,
     y=0,
-    dw=cube_show.shape[0],
-    dh=cube_show.shape[1],
+    dw=cube_show.shape[1],
+    dh=cube_show.shape[0],
+    dilate=True,
     palette="Spectral11",
     level="image",
 )
