@@ -22,3 +22,6 @@ htmlcov/
 
 *.csv
 .DS_Store
+
+# Drafts
+drafts/
