@@ -11,10 +11,35 @@ from hyperpy import read_specim, read_hyspex, read_mat_file
 # Cube class with data, domain name, get matrix, post init with check dimension
 
 @dataclass
-class SpectralCube:
+class Spectral:
     data: np.array
     domain: np.array
 
+    def get_matrix(self):
+        pass
+
+
+@dataclass
+class SpectralMat(Spectral):
+    def __post_init__(self):
+        """
+        Make some check for the consistency of the data.
+        """
+        # Check data dimension
+        if len(self.data.shape) != 2:
+            raise exceptions.DataDimensionError(len(self.data.shape), 2)
+        # Check data dimension
+        if len(self.domain.shape) != 1:
+            raise exceptions.DataDimensionError(len(self.domain.shape), 1)
+        data_domain = self.data.shape[1]
+        if data_domain != self.domain.shape[0]:
+            raise exceptions.WrongDomainDimension(self.domain.shape, self.data.shape)
+
+    def get_matrix(self):
+        return self.data
+
+@dataclass
+class SpectralCube(Spectral):
     def __post_init__(self):
         """
         Make some check for the consistency of the data.
@@ -81,12 +106,12 @@ def as_cube(
     data: np.array, spectral_cube: SpectralCube, domain: Optional[np.array] = None
 ):
     """
-    Create a Spectral Cube using the cube shape of an existing Spectral Cube.
+    Create a Spectral Cube using the spectral shape of an existing Spectral Cube.
     :param data: 2D numpy array to transform in Spectral Cube.
-    :param spectral_cube: reference spectral cube.
-    :param domain: Optional. If None use the domain of the reference spectral cube.
+    :param spectral_cube: reference spectral spectral.
+    :param domain: Optional. If None use the domain of the reference spectral spectral.
     :return: SpectralCube
     """
     domain = domain or spectral_cube.domain
-    data_cube = np.reshape(data, spectral_cube.shape)
+    data_cube = np.reshape(data, spectral_cube.shape[:2]+(domain.shape,))
     return SpectralCube(data=data_cube, domain=domain)

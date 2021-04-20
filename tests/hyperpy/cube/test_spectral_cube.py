@@ -5,7 +5,7 @@ import pytest
 from mock import Mock
 
 from hyperpy import exceptions
-from hyperpy.cube.spectral_cube import SpectralCube, as_cube
+from hyperpy.spectral.classes import SpectralCube, as_cube
 
 
 class TestSpectralCube:
@@ -49,7 +49,7 @@ class TestSpectralCube:
 
         np.allclose(expected_mat, test_mat)
 
-    @mock.patch("hyperpy.cube.classes.read_mat_file")
+    @mock.patch("hyperpy.spectral.classes.read_mat_file")
     def test_from_mat_file_without_domain(self, mocked_read_mat):
         test_cube = np.array(
             [
@@ -66,7 +66,7 @@ class TestSpectralCube:
         np.allclose(spectral_cube.data, test_cube)
         np.allclose(spectral_cube.domain, test_domain)
 
-    @mock.patch("hyperpy.cube.classes.read_mat_file")
+    @mock.patch("hyperpy.spectral.classes.read_mat_file")
     def test_from_mat_file_with_domain(self, mocked_read_mat):
         test_cube = np.array(
             [
@@ -83,7 +83,7 @@ class TestSpectralCube:
         np.allclose(spectral_cube.data, test_cube)
         np.allclose(spectral_cube.domain, test_domain)
 
-    @mock.patch("hyperpy.cube.classes.read_specim")
+    @mock.patch("hyperpy.spectral.classes.read_specim")
     def test_from_specim(self, mocked_read_specim):
         test_cube = np.array(
             [
@@ -100,7 +100,7 @@ class TestSpectralCube:
         np.allclose(spectral_cube.data, test_cube)
         np.allclose(spectral_cube.domain, test_domain)
 
-    @mock.patch("hyperpy.cube.classes.read_hyspex")
+    @mock.patch("hyperpy.spectral.classes.read_hyspex")
     def test_from_hyspex(self, mocked_read_hyspex):
         test_cube = np.array(
             [
@@ -119,7 +119,7 @@ class TestSpectralCube:
 
 
 class TestAsCube:
-    @mock.patch("hyperpy.cube.classes.SpectralCube.__new__")
+    @mock.patch("hyperpy.spectral.classes.SpectralCube.__new__")
     def test_as_cube(self, mocked_spectral_cube_new):
         data = [[1, 2], [3, 4]]
         domain = [1]

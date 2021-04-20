@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.base import TransformerMixin
 
 from hyperpy import exceptions
-from hyperpy.cube import SpectralCube, as_cube
+from hyperpy.spectral import SpectralCube, as_cube
 
 from sklearn.pipeline import make_pipeline
 
@@ -12,7 +12,7 @@ from sklearn.pipeline import make_pipeline
 def spectral_process(spectral_cube: SpectralCube,
                      transformers: Tuple[TransformerMixin]) -> SpectralCube:
     """
-    Apply transformers to a spectral cube and return a new spectral cube.
+    Apply transformers to a spectral spectral and return a new spectral spectral.
     :param spectral_cube:
     :param transformers:
     :return:

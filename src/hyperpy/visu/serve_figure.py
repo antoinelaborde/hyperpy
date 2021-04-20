@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Union
 
 import holoviews as hv
 import numpy as np
@@ -7,7 +7,8 @@ import panel as pn
 from holoviews import streams, opts
 from sklearn.decomposition import PCA
 
-from hyperpy.cube import SpectralCube
+from hyperpy.spectral import SpectralCube
+from hyperpy.models.utils import sub_sampling
 
 hv.extension('bokeh')
 
@@ -40,6 +41,7 @@ class PCAFigure(DynamicFigure):
     image_width: int = 900
     image_height: int = 450
     nbr_components: Optional[int] = None
+    sub_sampling_size: Union[float, int, None] = None
 
     def __post_init__(self):
         """
@@ -65,7 +67,13 @@ class PCAFigure(DynamicFigure):
         data_matrix = self.spectral_cube.get_matrix()
         n_components = self.nbr_components or min(data_matrix.shape)
         self.pca = PCA(n_components=n_components)
-        scores = self.pca.fit_transform(data_matrix)
+
+        if self.sub_sampling_size:
+            data_fit = sub_sampling(data_matrix, self.sub_sampling_size)
+            self.pca.fit_transform(data_fit)
+            scores = self.pca.transform(data_matrix)
+        else:
+            scores = self.pca.fit_transform(data_matrix)
         self.scores_cube = scores.reshape(map_shape + (n_components,))
 
 

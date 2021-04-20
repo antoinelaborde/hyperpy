@@ -69,6 +69,6 @@ def get_max_rectangle_mask(mask: np.array) -> RectangleMask:
     cut_y0 = 0 if cut_y0 < 0 else cut_y0
     cut_xf = mask.shape[0] - 1 if cut_xf > mask.shape[0] else cut_xf
     cut_yf = mask.shape[1] - 1 if cut_yf > mask.shape[1] else cut_yf
-    # Cut the cube with rectangle shape
+    # Cut the spectral with rectangle shape
     rectangle_mask = RectangleMask(mask.shape, (cut_x0, cut_xf), (cut_y0, cut_yf))
     return rectangle_mask

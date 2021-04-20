@@ -79,7 +79,7 @@ class Positive(TransformerMixin):
         return X_pos
 
 
-class StandardNormalDeviate(TransformerMixin):
+class StandardNormalVariate(TransformerMixin):
     """
     Standardize the row of the matrix by removing the mean and dividing the standard deviation.
     Y = (X - mean(X)) / std(X)
@@ -87,7 +87,7 @@ class StandardNormalDeviate(TransformerMixin):
     """
 
     def __init__(self):
-        self.name = "Standard Normal Deviate"
+        self.name = "Standard Normal Variate"
         self.short_name = "SNV"
 
     def fit(self, X: np.array, y=None):

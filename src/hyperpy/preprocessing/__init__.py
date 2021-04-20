@@ -1,7 +1,7 @@
 from .transformers import (
     Log,
     Positive,
-    StandardNormalDeviate,
+    StandardNormalVariate,
     MeanCentering,
     SavitzkyGolay,
     MultiplicativeScatterCorrection,
