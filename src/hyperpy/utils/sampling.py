@@ -36,10 +36,11 @@ class DataSampler:
 
         if not(hasattr(self, 'data')):
             self.data = self.spectral.get_matrix()
-        return resample(self.data, n_samples=shape, replace=False, random_state=random_state)
+        return resample(self.data, n_samples=self.shape, replace=False, random_state=self.random_state)
 
-    def fit_predict_on(self, predictor: TransformerMixin):
+    def fit_on(self, predictor: TransformerMixin):
         """
         :return:
         """
         predictor.fit(self.sample())
+        return predictor

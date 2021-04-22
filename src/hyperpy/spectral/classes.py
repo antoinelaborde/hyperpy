@@ -113,5 +113,5 @@ def as_cube(
     :return: SpectralCube
     """
     domain = domain or spectral_cube.domain
-    data_cube = np.reshape(data, spectral_cube.shape[:2]+(domain.shape,))
+    data_cube = data.reshape(spectral_cube.shape[:2]+domain.shape)
     return SpectralCube(data=data_cube, domain=domain)
