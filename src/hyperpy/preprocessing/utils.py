@@ -22,7 +22,7 @@ def spectral_process(spectral_cube: SpectralCube,
     transformed_matrix = pipeline.transform(spectral_matrix)
     new_domain = spectral_cube.domain
     for transformer in transformers:
-        if hasattr(transformer, 'domain'):
+        if hasattr(transformer, 'transformed_domain'):
             new_domain = transformer.transformed_domain
     transformed_cube = transformed_matrix.reshape((spectral_cube.shape[:2]+(new_domain.shape[0],)))
     return SpectralCube(transformed_cube, domain=new_domain)
