@@ -20,13 +20,13 @@ class DomainSelection(TransformerMixin):
         self.name = "Domain selection"
         self.short_name = "domain selection"
         self.selection = selection
-        self.domain = domain
+        self.original_domain = domain
+        self.transformed_domain = domain[self.selection]
 
     def fit(self, X: np.array, y=None):
         return self
 
     def transform(self, X: np.array) -> np.array:
-        self.domain = self.domain[self.selection]
         return X[:, self.selection]
 
 class Log(TransformerMixin):
