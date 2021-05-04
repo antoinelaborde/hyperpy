@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from hyperpy.cube import RectangleMask, get_max_rectangle_mask
+from hyperpy.spectral import RectangleMask, get_max_rectangle_mask
 from hyperpy.exceptions import DataDimensionError, ArrayDimensionError
 
 

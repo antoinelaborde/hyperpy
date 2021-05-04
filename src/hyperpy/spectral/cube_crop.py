@@ -1,8 +1,9 @@
+import copy
+import numpy as np
 from typing import Tuple
 
-import numpy as np
-
 from hyperpy.exceptions import DataDimensionError, ArrayDimensionError
+from hyperpy.spectral import SpectralCube
 
 
 class RectangleMask:
@@ -11,7 +12,7 @@ class RectangleMask:
     """
 
     def __init__(
-        self, shape: Tuple[int, int], x_mask: Tuple[int, int], y_mask: Tuple[int, int]
+            self, shape: Tuple[int, int], x_mask: Tuple[int, int], y_mask: Tuple[int, int]
     ):
         """
         :param shape: (x_shape, y_shape) for the original array.
@@ -30,7 +31,7 @@ class RectangleMask:
         self.rectangle_mask = np.zeros(self.shape)
         self.rectangle_mask[:] = False
         self.rectangle_mask[
-            self.x_mask[0] : self.x_mask[1], self.y_mask[0] : self.y_mask[1]
+        self.x_mask[0]: self.x_mask[1], self.y_mask[0]: self.y_mask[1]
         ] = True
         return self.rectangle_mask
 
@@ -44,16 +45,28 @@ class RectangleMask:
             raise ArrayDimensionError(array.shape, self.shape)
         if len(array.shape) == 3:
             masked_array = array[
-                self.x_mask[0] : self.x_mask[1], self.y_mask[0] : self.y_mask[1], :
-            ]
+                           self.x_mask[0]: self.x_mask[1], self.y_mask[0]: self.y_mask[1], :
+                           ]
         elif len(array.shape) == 2:
             masked_array = array[
-                self.x_mask[0] : self.x_mask[1], self.y_mask[0] : self.y_mask[1]
-            ]
+                           self.x_mask[0]: self.x_mask[1], self.y_mask[0]: self.y_mask[1]
+                           ]
         else:
             raise DataDimensionError(len(array.shape), "2 or 3")
         return masked_array
 
+    def apply_spectral(self, spectral: SpectralCube, inplace=False):
+        """
+        Apply the rectangle mask on a SpectralCube
+        :param spectral: instance of SpectralCube
+        :param inplace:
+        :return:
+        """
+        masked_array = self.apply(spectral.data)
+        if not inplace:
+            return SpectralCube(data=masked_array, domain=spectral.domain)
+        else:
+            spectral.update_data(masked_array)
 
 def get_max_rectangle_mask(mask: np.array) -> RectangleMask:
     """
@@ -69,6 +82,6 @@ def get_max_rectangle_mask(mask: np.array) -> RectangleMask:
     cut_y0 = 0 if cut_y0 < 0 else cut_y0
     cut_xf = mask.shape[0] - 1 if cut_xf > mask.shape[0] else cut_xf
     cut_yf = mask.shape[1] - 1 if cut_yf > mask.shape[1] else cut_yf
-    # Cut the cube with rectangle shape
+    # Cut the spectral with rectangle shape
     rectangle_mask = RectangleMask(mask.shape, (cut_x0, cut_xf), (cut_y0, cut_yf))
     return rectangle_mask

@@ -20,13 +20,13 @@ class DomainSelection(TransformerMixin):
         self.name = "Domain selection"
         self.short_name = "domain selection"
         self.selection = selection
-        self.domain = domain
+        self.original_domain = domain
+        self.transformed_domain = domain[self.selection]
 
     def fit(self, X: np.array, y=None):
         return self
 
     def transform(self, X: np.array) -> np.array:
-        self.domain = self.domain[self.selection]
         return X[:, self.selection]
 
 class Log(TransformerMixin):
@@ -79,7 +79,7 @@ class Positive(TransformerMixin):
         return X_pos
 
 
-class StandardNormalDeviate(TransformerMixin):
+class StandardNormalVariate(TransformerMixin):
     """
     Standardize the row of the matrix by removing the mean and dividing the standard deviation.
     Y = (X - mean(X)) / std(X)
@@ -87,7 +87,7 @@ class StandardNormalDeviate(TransformerMixin):
     """
 
     def __init__(self):
-        self.name = "Standard Normal Deviate"
+        self.name = "Standard Normal Variate"
         self.short_name = "SNV"
 
     def fit(self, X: np.array, y=None):

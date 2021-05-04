@@ -181,3 +181,4 @@ def get_wavelength(file_name: str):
     hdr_file = read_hdr_file(hdr_file_name)
     wavelength = np.asarray(eval(hdr_file["wavelength"]))
     return wavelength
+

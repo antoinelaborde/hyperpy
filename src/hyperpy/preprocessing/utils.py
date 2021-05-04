@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.base import TransformerMixin
 
 from hyperpy import exceptions
-from hyperpy.cube import SpectralCube, as_cube
+from hyperpy.spectral import SpectralCube, as_cube
 
 from sklearn.pipeline import make_pipeline
 
@@ -12,7 +12,7 @@ from sklearn.pipeline import make_pipeline
 def spectral_process(spectral_cube: SpectralCube,
                      transformers: Tuple[TransformerMixin]) -> SpectralCube:
     """
-    Apply transformers to a spectral cube and return a new spectral cube.
+    Apply transformers to a spectral spectral and return a new spectral spectral.
     :param spectral_cube:
     :param transformers:
     :return:
@@ -22,8 +22,8 @@ def spectral_process(spectral_cube: SpectralCube,
     transformed_matrix = pipeline.transform(spectral_matrix)
     new_domain = spectral_cube.domain
     for transformer in transformers:
-        if hasattr(transformer, 'domain'):
-            new_domain = transformer.domain
+        if hasattr(transformer, 'transformed_domain'):
+            new_domain = transformer.transformed_domain
     transformed_cube = transformed_matrix.reshape((spectral_cube.shape[:2]+(new_domain.shape[0],)))
     return SpectralCube(transformed_cube, domain=new_domain)
 
@@ -75,3 +75,20 @@ def resize_x(x: np.array) -> np.array:
         return x
     else:
         raise exceptions.ArrayDimensionError(len(x.shape), (1, 2))
+
+def remove_error_specim_line(spectral: SpectralCube):
+    """
+    Remove error line for Specim images
+    :param spectral:
+    :return:
+    """
+    # Get mean spectral value per pixel
+    mean_per_pixel = np.mean(spectral.data, axis=2)
+    # Get the sum for each sample line
+    sum_per_line = np.sum(mean_per_pixel, axis=1)
+    # Get index with max value
+    index_max_to_keep = np.where(sum_per_line != sum_per_line.max())[0]
+    data = spectral.data
+    data = data[index_max_to_keep, :, :]
+    spectral.update_data(data)
+    return spectral
