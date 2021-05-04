@@ -1,13 +1,12 @@
 from typing import Tuple, Union
 
-from hyperpy.spectral import SpectralCube, as_cube
+from hyperpy.spectral import Spectral, as_cube, SpectralCube, SpectralMat
 from sklearn.cluster import KMeans
 import numpy as np
 
 from hyperpy.utils import DataSampler
 
-
-def kmeans(spectral: SpectralCube, sub_sampling_size: Union[float, int, None] = None, **kwargs) -> Tuple[KMeans, SpectralCube]:
+def kmeans(spectral: Spectral, sub_sampling_size: Union[float, int, None] = None, **kwargs) -> Tuple[KMeans, SpectralCube]:
     """
     Performs a k-means clustering.
     :param spectral:
@@ -25,9 +24,22 @@ def kmeans(spectral: SpectralCube, sub_sampling_size: Union[float, int, None] = 
     else:
         k_means_predictions = k_means.fit_predict(data)
 
-    k_means_cube = as_cube(k_means_predictions, spectral, np.array(['k_means_class']))
+    if isinstance(spectral, SpectralCube):
+        k_means_classes = as_cube(k_means_predictions, spectral, np.array(['k_means_class']))
+    else:
+        k_means_classes = SpectralMat(data=k_means_predictions, domain=np.array(['k_means_class']))
 
-    return k_means, k_means_cube
+    return k_means, k_means_classes
+
+def kmeans_plot(kmeans: KMeans, kmeans_classes: Spectral):
+    """
+
+    :param kmeans:
+    :param kmeans_classes:
+    :return:
+    """
+
+    pass
 
 
 
