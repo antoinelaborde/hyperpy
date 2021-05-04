@@ -44,17 +44,22 @@ class SpectralCube(Spectral):
         """
         Make some check for the consistency of the data.
         """
-        # Check data dimension
-        if len(self.data.shape) != 3:
-            raise exceptions.DataDimensionError(len(self.data.shape), 3)
-        # Check data dimension
-        if len(self.domain.shape) != 1:
-            raise exceptions.DataDimensionError(len(self.domain.shape), 1)
-        # Check domain dimension
+        self._check_data()
         self.width, self.height, data_domain = self.data.shape
-        if data_domain != self.domain.shape[0]:
-            raise exceptions.WrongDomainDimension(self.domain.shape, self.data.shape)
         self.shape = self.data.shape
+
+    def _check_data(self, data: Optional[np.array], domain: Optional[np.array]):
+        data = data or self.data
+        domain = domain or self.domain
+        # Check data dimension
+        if len(data.shape) != 3:
+            raise exceptions.DataDimensionError(len(data.shape), 3)
+        # Check data dimension
+        if len(domain.shape) != 1:
+            raise exceptions.DataDimensionError(len(domain.shape), 1)
+        # Check domain dimension
+        if data.shape[2] != domain.shape[0]:
+            raise exceptions.WrongDomainDimension(domain.shape, data.shape)
 
     def get_matrix(self):
         """
@@ -63,6 +68,17 @@ class SpectralCube(Spectral):
         x, y, l = self.data.shape
         mat = np.reshape(self.data, (x * y, l))
         return mat
+
+    def update_data(self, data: np.array):
+        """
+        Updata self.data and perform check
+        :param data:
+        :return:
+        """
+        self._check_data(data=data)
+        self.data = data
+        self.width, self.height, data_domain = self.data.shape
+        self.shape = self.data.shape
 
     @staticmethod
     def from_mat_file(data_file_name: str, domain_file_name: Optional[str] = None):
