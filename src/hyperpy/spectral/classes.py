@@ -49,8 +49,8 @@ class SpectralCube(Spectral):
         self.shape = self.data.shape
 
     def _check_data(self, data: Optional[np.array] = None, domain: Optional[np.array] = None):
-        data = data or self.data
-        domain = domain or self.domain
+        data = self.data if data is None else self.data
+        domain = self.domain if domain is None else self.domain
         # Check data dimension
         if len(data.shape) != 3:
             raise exceptions.DataDimensionError(len(data.shape), 3)
