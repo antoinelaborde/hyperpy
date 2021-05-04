@@ -75,3 +75,20 @@ def resize_x(x: np.array) -> np.array:
         return x
     else:
         raise exceptions.ArrayDimensionError(len(x.shape), (1, 2))
+
+def remove_error_specim_line(spectral: SpectralCube):
+    """
+    Remove error line for Specim images
+    :param spectral:
+    :return:
+    """
+    # Get mean spectral value per pixel
+    mean_per_pixel = np.mean(spectral.data, axis=2)
+    # Get the sum for each sample line
+    sum_per_line = np.sum(mean_per_pixel, axis=1)
+    # Get index with max value
+    index_max_to_keep = np.where(sum_per_line != sum_per_line.max())[0]
+    data = spectral.data
+    data = data[index_max_to_keep, :, :]
+    spectral.update_data(data)
+    return spectral
