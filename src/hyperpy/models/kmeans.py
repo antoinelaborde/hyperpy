@@ -36,7 +36,7 @@ def kmeans(spectral: Spectral, sub_sampling_size: Union[float, int, None] = None
 
 
 def kmeans_cube_plot(kmeans: KMeans, kmeans_classes: SpectralCube, colormap_name: str = 'Set1',
-                     barycenter_domain: Optional[np.array] = None):
+                     barycenter_domain: Optional[np.array] = None, title=None):
     """
     Plot the score map of kmeans classes and the barycenters.
     :param kmeans: instance of KMeans.
